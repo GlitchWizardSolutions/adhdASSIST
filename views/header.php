@@ -25,8 +25,8 @@ if (!isset($current_page)) {
 $user_role = $user['role'] ?? 'user';
 $is_admin = $user && in_array($user_role, ['admin', 'developer']);
 
-// Get avatar URL or use generic placeholder (make it absolute path)
-$avatar_url = (!empty($user['avatar_url'])) ? APP_SUBDIR . '/' . htmlspecialchars($user['avatar_url']) : null;
+// Get avatar URL or use generic placeholder (API URL is already stored in database)
+$avatar_url = (!empty($user['avatar_url'])) ? htmlspecialchars($user['avatar_url']) : null;
 $user_display_name = $user ? (htmlspecialchars(($user['username'] ?? '') ?: ($user['first_name'] ?? $user['email']))) : 'User';
 
 // Generate initials for fallback avatar

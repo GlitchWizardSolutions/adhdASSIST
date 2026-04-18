@@ -270,7 +270,7 @@ try {
           <!-- Avatar Upload Section -->
           <div class="avatar-section">
             <div class="avatar-preview">
-              <img id="avatar_preview" src="<?php echo !empty($user['avatar_url']) ? APP_SUBDIR . '/' . htmlspecialchars($user['avatar_url']) : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%23ddd%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22Arial%22 font-size=%2216%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'; ?>" alt="Avatar preview for your profile">
+              <img id="avatar_preview" src="<?php echo !empty($user['avatar_url']) ? htmlspecialchars($user['avatar_url']) : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%23ddd%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22Arial%22 font-size=%2216%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'; ?>" alt="Avatar preview for your profile">
               <p style="margin-top: 1rem; font-weight: 600; color: #333;">
                 <?php echo htmlspecialchars($user['first_name'] ?? 'User'); ?>
               </p>

@@ -31,7 +31,7 @@ $userTheme = $user['theme'] ?? 'light';
 $pageTitle = 'Admin Dashboard';
 
 // Get avatar URL or use generic placeholder
-$avatar_url = (!empty($user['avatar_url'])) ? APP_SUBDIR . '/' . htmlspecialchars($user['avatar_url']) : null;
+$avatar_url = (!empty($user['avatar_url'])) ? htmlspecialchars($user['avatar_url']) : null;
 $user_display_name = htmlspecialchars(($user['username'] ?? '') ?: ($user['first_name'] ?? $user['email']));
 
 // Generate initials for fallback avatar

@@ -44,8 +44,8 @@ if ($file['size'] > $max_size) {
 }
 
 try {
-    // Create uploads directory if needed
-    $upload_dir = __DIR__ . '/../../uploads';
+    // Create uploads directory in /private/ (survives GitHub pulls)
+    $upload_dir = __DIR__ . '/../../../private/uploads';
     if (!file_exists($upload_dir)) {
         mkdir($upload_dir, 0755, true);
     }
@@ -114,14 +114,16 @@ try {
     $old_user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!empty($old_user['avatar_url'])) {
-        $old_file = __DIR__ . '/../../' . $old_user['avatar_url'];
+        // Extract filename from old URL (could be API URL or legacy path)
+        $old_filename = basename($old_user['avatar_url']);
+        $old_file = __DIR__ . '/../../../private/uploads/' . $old_filename;
         if (file_exists($old_file)) {
             @unlink($old_file);
         }
     }
 
-    // Save to database
-    $avatar_url = 'uploads/' . $filename;
+    // Save to database as API URL (environment-aware)
+    $avatar_url = Config::url('api') . '/files/serve.php?type=avatar&file=' . $filename;
     $stmt = $pdo->prepare('UPDATE users SET avatar_url = ? WHERE id = ?');
     $stmt->execute([$avatar_url, $user_id]);
 

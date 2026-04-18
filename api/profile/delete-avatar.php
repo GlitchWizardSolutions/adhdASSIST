@@ -33,7 +33,9 @@ try {
 
     // Delete file if exists
     if (!empty($current_user['avatar_url'])) {
-        $file_path = __DIR__ . '/../../' . $current_user['avatar_url'];
+        // Extract filename from URL (handles both API URL and legacy paths)
+        $filename = basename(parse_url($current_user['avatar_url'], PHP_URL_PATH));
+        $file_path = __DIR__ . '/../../../private/uploads/' . $filename;
         if (file_exists($file_path)) {
             @unlink($file_path);
         }

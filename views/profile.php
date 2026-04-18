@@ -167,7 +167,7 @@ try {
       <div style="text-align: center; margin-bottom: 2rem;">
         <div class="profile-avatar">
           <?php if (!empty($user['avatar_url'])): ?>
-            <img src="<?php echo APP_SUBDIR . '/' . htmlspecialchars($user['avatar_url']); ?>" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+            <img src="<?php echo htmlspecialchars($user['avatar_url']); ?>" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
           <?php else: ?>
             <i class="bi bi-person-fill"></i>
           <?php endif; ?>
