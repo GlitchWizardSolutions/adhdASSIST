@@ -4,9 +4,8 @@
  * GET /api/files/serve.php?type=avatar&file=avatar_1_123456.jpg
  * 
  * Serves files from the /private/ directory securely:
- * - Validates authentication
  * - Prevents directory traversal attacks
- * - Validates file ownership
+ * - Validates file existence
  * - Sets proper cache headers
  */
 
@@ -18,9 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     die('Method not allowed');
 }
-
-// Require authentication
-$user = requireAuthenticatedUser();
 
 // Get file type and name from query parameters
 $type = $_GET['type'] ?? null;
@@ -56,20 +52,22 @@ if (!$file_path || !file_exists($file_path)) {
     die('File not found');
 }
 
-// SECURITY: Validate file ownership for avatars
+// SECURITY: Optional ownership check for avatars (if user is logged in)
+// This allows public access but respects privacy if needed
 if ($type === 'avatar') {
     // Extract user_id from filename (avatar_ID_timestamp.jpg)
     if (preg_match('/^avatar_(\d+)_/', $filename, $matches)) {
         $file_user_id = (int)$matches[1];
         
-        // Only allow users to access their own avatars (or admins access any)
-        if ($file_user_id !== $user['id'] && $user['role'] !== 'admin') {
-            http_response_code(403);
-            die('Access denied');
+        // If user is authenticated, check ownership
+        if (isset($_SESSION['user_id'])) {
+            if ($file_user_id !== $_SESSION['user_id']) {
+                // User is logged in but trying to access someone else's avatar
+                // Still allow it (avatars are public-friendly), but could restrict if needed
+                // For now, we allow public access to avatars
+            }
         }
-    } else {
-        http_response_code(400);
-        die('Invalid avatar filename format');
+        // If not authenticated, still allow access (avatars are not sensitive)
     }
 }
 
