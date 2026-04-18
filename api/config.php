@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/../lib/database.php';
 require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/config.php';
 
 // Set JSON response header
 header('Content-Type: application/json; charset=utf-8');
