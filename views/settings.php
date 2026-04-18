@@ -199,6 +199,60 @@ try {
       gap: 0.75rem;
     }
 
+    /* Loading Spinner Styles */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner-container {
+      background: white;
+      border-radius: 12px;
+      padding: 3rem;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      min-width: 300px;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1.5rem;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--color-calm);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .spinner-text {
+      font-size: 1.1rem;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .spinner-subtext {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
     .section-divider {
       border-top: 1px solid #e5e7eb;
       margin: 2rem 0;
@@ -669,6 +723,10 @@ try {
     }
 
     function saveSettings() {
+      // Show loading spinner
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      loadingOverlay.classList.add('active');
+
       const avatarFile = document.getElementById('avatar_upload');
       const formData = new FormData();
       const currentEmail = document.getElementById('email').dataset.currentEmail || '<?php echo htmlspecialchars($user['email'] ?? ''); ?>';
@@ -737,19 +795,25 @@ try {
             try {
               const json = JSON.parse(text);
               if (!json.success) {
-                alert('Avatar upload failed: ' + (json.error || 'Unknown error'));
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.classList.remove('active');
+                alert('Avatar upload failed:\n\n' + (json.error || 'Unknown error'));
                 return;
               }
               // Continue with profile update
               updatePreferences(formData, newEmail, emailChanged);
             } catch (parseError) {
+              const loadingOverlay = document.getElementById('loadingOverlay');
+              loadingOverlay.classList.remove('active');
               console.error('Failed to parse avatar response as JSON:', parseError);
-              alert('Avatar upload response error: ' + text);
+              alert('Server response error:\n\n' + text);
             }
           })
           .catch(e => {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.remove('active');
             console.error('Avatar upload error:', e);
-            alert('Error uploading avatar: ' + e.message);
+            alert('Error uploading avatar:\n\n' + e.message + '\n\nPlease check the browser console for more details.');
           });
       } else {
         updatePreferences(formData, newEmail, emailChanged);
@@ -757,6 +821,8 @@ try {
     }
 
     function updatePreferences(formData, newEmail, emailChanged) {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      
       // If email changed, request verification first
       if (emailChanged) {
         const emailVerifyData = new FormData();
@@ -778,29 +844,34 @@ try {
                     return r.text();
                   })
                   .then(text => {
+                    loadingOverlay.classList.remove('active');
                     const json = JSON.parse(text);
                     if (json.success) {
                       alert('Settings saved successfully!\n\n✉️ Verification email sent to ' + newEmail + '\nPlease check your inbox to confirm the email change.');
                       setTimeout(() => location.reload(), 2000);
                     } else {
-                      alert('Error saving preferences: ' + (json.error || 'Failed to save settings'));
+                      alert('Error saving preferences:\n\n' + (json.error || 'Failed to save settings'));
                     }
                   })
                   .catch(e => {
+                    loadingOverlay.classList.remove('active');
                     console.error('Preferences save error:', e);
-                    alert('Error saving preferences: ' + e.message);
+                    alert('Error saving preferences:\n\n' + e.message);
                   });
               } else {
-                alert('Error requesting email verification: ' + (json.error || 'Failed to send verification email'));
+                loadingOverlay.classList.remove('active');
+                alert('Error requesting email verification:\n\n' + (json.error || 'Failed to send verification email'));
               }
             } catch (parseError) {
+              loadingOverlay.classList.remove('active');
               console.error('Email verification response parse error:', parseError, text);
-              alert('Server error: ' + text);
+              alert('Server error:\n\n' + text);
             }
           })
           .catch(e => {
+            loadingOverlay.classList.remove('active');
             console.error('Email verification fetch error:', e);
-            alert('Error requesting email verification: ' + e.message);
+            alert('Error requesting email verification:\n\n' + e.message);
           });
       } else {
         // No email change, just save preferences normally
@@ -812,6 +883,7 @@ try {
           })
           .then(text => {
             console.log('Preferences API response text:', text);
+            loadingOverlay.classList.remove('active');
             try {
               const json = JSON.parse(text);
               console.log('Preferences API response (parsed):', json);
@@ -819,16 +891,17 @@ try {
                 alert('Settings saved successfully!');
                 setTimeout(() => location.reload(), 500);
               } else {
-                alert('Error: ' + (json.error || 'Failed to save settings'));
+                alert('Error:\n\n' + (json.error || 'Failed to save settings'));
               }
             } catch (parseError) {
               console.error('Response parse error:', parseError, text);
-              alert('Server error: ' + text);
+              alert('Server error:\n\n' + text);
             }
           })
           .catch(e => {
+            loadingOverlay.classList.remove('active');
             console.error('Error saving settings:', e);
-            alert('Error saving settings: ' + e.message);
+            alert('Error saving settings:\n\n' + e.message);
           });
       }
     }
@@ -875,6 +948,15 @@ try {
       }
     });
   </script>
+
+  <!-- Loading Spinner Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <div class="spinner-text">Saving Settings...</div>
+      <div class="spinner-subtext">Please wait while we process your changes</div>
+    </div>
+  </div>
 
   <!-- Scroll to Top Component -->
   <script src="<?php echo Config::url('js'); ?>scroll-to-top.js"></script>
