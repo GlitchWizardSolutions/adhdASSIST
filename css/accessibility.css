@@ -1,0 +1,400 @@
+/**
+ * Accessibility - WCAG 2.1 Level AA compliant styles
+ * Focus indicators, skip links, screen reader only elements, motion preferences
+ */
+
+/* ===== FOCUS INDICATORS ===== */
+
+:focus {
+    outline: var(--border-width-3) solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+:focus-visible {
+    outline: var(--border-width-3) solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Button focus */
+button:focus,
+button:focus-visible,
+a.btn:focus,
+a.btn:focus-visible {
+    outline: var(--border-width-3) solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(255, 179, 0, 0.2);
+}
+
+/* Input focus */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+    outline: var(--border-width-3) solid var(--color-primary);
+    outline-offset: 0;
+    border-color: var(--color-primary);
+}
+
+/* Form control focus */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 179, 0, 0.2);
+}
+
+/* ===== SKIP TO CONTENT LINK ===== */
+
+.skip-to-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--border-radius-md);
+    font-weight: var(--font-weight-semibold);
+}
+
+.skip-to-content:focus {
+    outline: var(--border-width-3) solid #fff;
+    outline-offset: 2px;
+}
+
+/* Hidden by default, visible on focus */
+.skip-to-content,
+.visually-hidden-focusable:not(:focus) {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
+}
+
+.visually-hidden-focusable:focus,
+.skip-to-content:focus {
+    position: fixed;
+    width: auto;
+    height: auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* ===== SCREEN READER ONLY ===== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ===== SEMANTIC LANDMARKS ===== */
+
+[role="main"] {
+    outline: none;
+}
+
+[role="main"]:focus-within {
+    /* Allow focus within main without outline */
+}
+
+[role="navigation"],
+[role="contentinfo"] {
+    /* Ensure navigation is keyboard accessible */
+}
+
+/* ===== HEADINGS ===== */
+
+h1, h2, h3, h4, h5, h6 {
+    margin: var(--spacing-md) 0;
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+}
+
+h1 {
+    font-size: var(--font-size-3xl);
+}
+
+h2 {
+    font-size: var(--font-size-2xl);
+}
+
+h3 {
+    font-size: var(--font-size-xl);
+}
+
+h4 {
+    font-size: var(--font-size-lg);
+}
+
+h5 {
+    font-size: var(--font-size-base);
+}
+
+h6 {
+    font-size: var(--font-size-sm);
+}
+
+/* ===== LINKS ===== */
+
+a {
+    color: var(--color-link);
+    text-decoration: underline;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-link-hover);
+}
+
+a:focus {
+    outline: var(--border-width-3) solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+}
+
+/* Skip link should not be underlined when not focused */
+.skip-to-content,
+.btn a {
+    text-decoration: none;
+}
+
+/* ===== LABELS ===== */
+
+label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Associate label with input via aria-labelledby */
+[aria-labelledby] {
+    /* Input will be associated with label */
+}
+
+/* ===== FORM VALIDATION ===== */
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--color-error);
+    background-image: none;
+}
+
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: var(--color-success);
+    background-image: none;
+}
+
+.invalid-feedback,
+.valid-feedback {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+}
+
+.invalid-feedback {
+    color: var(--color-error);
+}
+
+.valid-feedback {
+    color: var(--color-success);
+}
+
+/* Ensure error messages are associated with inputs */
+input[aria-describedby],
+textarea[aria-describedby],
+select[aria-describedby] {
+    /* Input will reference error message via aria-describedby */
+}
+
+/* ===== TABS ===== */
+
+[role="tablist"] {
+    display: flex;
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+[role="tab"] {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-light);
+    border-bottom: var(--border-width-3) solid transparent;
+    transition: all var(--transition-base);
+}
+
+[role="tab"]:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+[role="tab"][aria-selected="true"] {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+[role="tab"]:focus {
+    outline: var(--border-width-3) solid var(--color-primary);
+    outline-offset: -3px;
+}
+
+[role="tabpanel"] {
+    padding: var(--spacing-lg) 0;
+    margin-top: var(--spacing-lg);
+}
+
+[role="tabpanel"][hidden] {
+    display: none;
+}
+
+/* ===== BUTTONS AND INTERACTIVE ELEMENTS ===== */
+
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ===== ICONS (ARIA-HIDDEN) ===== */
+
+[aria-hidden="true"] {
+    display: none;
+}
+
+.icon,
+.bi {
+    /* Icons should be aria-hidden if they're decorative */
+}
+
+/* ===== TOOLTIPS ===== */
+
+[role="tooltip"] {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-text);
+    color: #fff;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+}
+
+/* ===== ALERTS AND NOTIFICATIONS ===== */
+
+[role="alert"],
+[role="status"] {
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    line-height: var(--line-height-normal);
+}
+
+/* Live regions should be announced */
+[aria-live="polite"],
+[aria-live="assertive"] {
+    /* Content will be announced by screen readers */
+}
+
+/* ===== REDUCED MOTION ===== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ===== DARK MODE PREFERENCE ===== */
+
+@media (prefers-color-scheme: dark) {
+    /* Prefer dark theme if system preference is dark */
+    :root {
+        color-scheme: dark;
+    }
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+
+@media (prefers-contrast: more) {
+    :focus,
+    :focus-visible {
+        outline-width: var(--border-width-3);
+    }
+
+    .btn {
+        border: var(--border-width) solid currentColor;
+    }
+}
+
+/* ===== FORCED COLORS MODE (Windows High Contrast) ===== */
+
+@media (forced-colors: active) {
+    button,
+    [role="button"],
+    .btn {
+        border: var(--border-width) solid;
+        forced-color-adjust: none;
+    }
+
+    input,
+    textarea,
+    select {
+        border: var(--border-width) solid;
+        forced-color-adjust: none;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+
+@media print {
+    /* Hide interactive elements from print */
+    .no-print,
+    button,
+    [role="button"],
+    .btn:not(.btn-print) {
+        display: none !important;
+    }
+
+    /* Improve link visibility in print */
+    a[href]::after {
+        content: " (" attr(href) ")";
+    }
+}

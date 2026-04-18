@@ -1,0 +1,12 @@
+https://www.easysendsms.com/
+
+CONFIGURATION REFERENCE:
+All credentials are in /private/.env:
+- EASYSEND_USERNAME
+- EASYSEND_API_KEY
+- EASYSEND_API_PASSWORD
+- SMS_CALLBACK_URL
+
+For webhook setup, check /private/.env for complete details.
+This file is reference only - do NOT edit.
+All configuration is centralized in /private directory.

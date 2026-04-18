@@ -1,0 +1,9 @@
+# Disable rewrite engine in API directory - allow direct PHP execution
+<IfModule mod_rewrite.c>
+    RewriteEngine Off
+</IfModule>
+
+# Prevent directory listing
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>

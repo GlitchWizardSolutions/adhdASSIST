@@ -1,0 +1,664 @@
+/**
+ * ADHD Dashboard - Admin Dashboard Styles
+ * Professional, accessible, theme-aware interface
+ */
+
+/* =========================================
+   Admin Layout Structure
+   ========================================= */
+
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-dark);
+}
+
+/* =========================================
+   Sidebar Navigation (Collapsible)
+   ========================================= */
+
+.admin-sidebar {
+  width: 240px;
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border-light);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, margin-left 0.3s ease;
+  position: relative;
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Collapsed State */
+.admin-sidebar.collapsed {
+  width: 70px;
+}
+
+.admin-sidebar.collapsed .nav-label,
+.admin-sidebar.collapsed .submenu-toggle,
+.admin-sidebar.collapsed .sidebar-brand {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  overflow: hidden;
+}
+
+/* Sidebar Header */
+.admin-sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-urgent);
+  color: var(--color-text-on-urgent);
+  font-weight: 700;
+  font-size: 1.1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--color-text-on-urgent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-toggle:focus {
+  outline: 2px solid #FFF;
+  outline-offset: -2px;
+}
+
+.sidebar-brand {
+  margin-left: 0.75rem;
+  transition: opacity 0.3s ease;
+}
+
+/* Navigation Sections */
+.admin-nav {
+  flex: 1;
+  padding-top: 0.5rem;
+  overflow-y: auto;
+}
+
+.nav-section {
+  padding: 0.5rem 0;
+}
+
+.nav-divider {
+  height: 1px;
+  background-color: var(--color-border-light);
+  margin: 0.75rem 0.5rem;
+}
+
+.nav-secondary {
+  margin-top: auto;
+  border-top: 1px solid var(--color-border-light);
+  padding-top: 1rem;
+}
+
+/* Navigation Items */
+.nav-item,
+.nav-menu {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  gap: 0.75rem;
+}
+
+.nav-item:hover,
+.nav-menu:hover {
+  background-color: var(--color-bg-primary);
+  color: var(--color-urgent);
+}
+
+.nav-item:focus,
+.nav-menu:focus {
+  outline: 2px solid var(--color-urgent);
+  outline-offset: -2px;
+}
+
+.nav-item.active {
+  background-color: rgba(255, 179, 0, 0.1);
+  color: var(--color-urgent);
+  border-left: 3px solid var(--color-urgent);
+  padding-left: calc(1rem - 3px);
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-label {
+  flex: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Submenu Toggle Icon */
+.submenu-toggle {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.nav-menu[aria-expanded="true"] .submenu-toggle {
+  transform: rotate(180deg);
+}
+
+/* Submenu Items */
+.nav-submenu {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  max-height: 0;
+  visibility: hidden;
+}
+
+.nav-menu[aria-expanded="true"] + .nav-submenu {
+  visibility: visible;
+  max-height: 300px;
+}
+
+.nav-subitem {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 0.5rem;
+}
+
+.nav-subitem:hover {
+  color: var(--color-urgent);
+  background-color: var(--color-bg-primary);
+}
+
+.nav-subitem:focus {
+  outline: 2px solid var(--color-urgent);
+  outline-offset: -2px;
+}
+
+/* =========================================
+   Main Content Area
+   ========================================= */
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-bg-primary);
+}
+
+.admin-header {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  box-shadow: none;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+.admin-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.admin-header-content h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  flex: 1;
+}
+
+.admin-header-user {
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  display: none;
+}
+
+.user-greeting {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 0 1rem;
+  border-radius: 20px;
+  line-height: 44px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Admin Header Icons - using Bootstrap navbar styling */
+.admin-header .bi-bell,
+.admin-header .bi-check-circle {
+  color: inherit;
+}
+
+/* Content Area */
+.admin-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+/* =========================================
+   Accessibility Features
+   ========================================= */
+
+/* Focus Visible States */
+:focus-visible {
+  outline: 2px solid var(--color-urgent);
+  outline-offset: 2px;
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: more) {
+  .nav-item,
+  .nav-menu,
+  .nav-subitem {
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item.active {
+    border-left: 3px solid var(--color-urgent);
+  }
+
+  .admin-sidebar {
+    border-right: 2px solid var(--color-border-dark);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .admin-sidebar,
+  .nav-label,
+  .nav-item,
+  .nav-menu,
+  .nav-subitem,
+  .submenu-toggle {
+    transition: none !important;
+  }
+}
+
+/* Dark Color Scheme Detection */
+@media (prefers-color-scheme: dark) {
+  .admin-sidebar {
+    box-shadow: 1px 0 3px rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* =========================================
+   Content Cards & Tables
+   ========================================= */
+
+.admin-card {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.admin-card h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+/* Compact Card Header (for title + filter sections) */
+.admin-card-header {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.admin-card-header h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.admin-card-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* Compact Filter Form */
+.admin-filter-compact {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-filter-compact > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 0 1 auto;
+}
+
+.admin-filter-compact label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.admin-filter-compact select,
+.admin-filter-compact input {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.6rem;
+  min-width: 220px;
+}
+
+.admin-filter-compact button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  background-color: var(--color-bg-primary);
+}
+
+.admin-table thead {
+  background-color: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--color-border-dark);
+}
+
+.admin-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text-dark);
+}
+
+.admin-table tbody tr:hover {
+  background-color: rgba(255, 179, 0, 0.03);
+}
+
+/* =========================================
+   Status Badges
+   ========================================= */
+
+.badge-status {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-active {
+  background-color: rgba(39, 174, 96, 0.1);
+  color: #27AE60;
+}
+
+.badge-inactive {
+  background-color: rgba(224, 228, 232, 0.5);
+  color: var(--color-text-muted);
+}
+
+.badge-pending {
+  background-color: rgba(255, 179, 0, 0.1);
+  color: var(--color-urgent);
+}
+
+/* =========================================
+   Status Cards (Overview Section)
+   ========================================= */
+
+.admin-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-status-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.admin-status-card:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.status-card-icon {
+  font-size: 1.25rem;
+  color: var(--color-urgent);
+  line-height: 1;
+}
+
+.status-card-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.2;
+}
+
+.status-card-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+/* =========================================
+   Responsive Design
+   ========================================= */
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    z-index: 2000;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .admin-sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+
+  .admin-layout.sidebar-open {
+    overflow: hidden;
+  }
+
+  .admin-layout.sidebar-open .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    width: 100%;
+  }
+
+  .admin-content {
+    padding: 1.5rem;
+  }
+
+  .admin-header {
+    padding: 1.5rem;
+  }
+
+  .admin-header-content h1 {
+    font-size: 1.4rem;
+  }
+
+  .admin-header-user {
+    position: static;
+    margin-top: 1rem;
+  }
+
+  .admin-status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-table {
+    font-size: 0.85rem;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header-content h1 {
+    font-size: 1.2rem;
+  }
+
+  .admin-sidebar-header {
+    padding: 0.75rem;
+  }
+
+  .sidebar-toggle {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .admin-content {
+    padding: 1rem;
+  }
+
+  .admin-card {
+    padding: 1rem;
+  }
+
+  .status-card-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* =========================================
+   Scrollbar Styling (Modern Browsers)
+   ========================================= */
+
+.admin-sidebar::-webkit-scrollbar,
+.admin-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track,
+.admin-content::-webkit-scrollbar-track {
+  background-color: var(--color-bg-secondary);
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb,
+.admin-content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-light);
+  border-radius: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover,
+.admin-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-border-dark);
+}
+
+/* =========================================
+   Print Styles
+   ========================================= */
+
+@media print {
+  .admin-sidebar,
+  .admin-header,
+  .sidebar-toggle {
+    display: none;
+  }
+
+  .admin-main {
+    width: 100%;
+  }
+
+  .admin-content {
+    padding: 0;
+  }
+}

@@ -1,0 +1,33 @@
+# Environment Variables
+# NOTE: .env is stored in /private/ directory (outside web root) for security
+../private/.env
+../private/.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+/vendor/
+
+# Logs
+*.log
+logs/
+
+# Database
+*.sql.bak
+db_backup/
+
+# Uploads (if using file uploads)
+/uploads/
+/tmp/
+
+# Sessions
+/sessions/
