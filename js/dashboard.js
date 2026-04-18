@@ -1264,10 +1264,16 @@
     }
   };
 
-  // Initialize on DOM ready
-  document.addEventListener('DOMContentLoaded', () => {
+  // Initialize on DOM ready (or immediately if already loaded)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      Dashboard.init();
+    });
+  } else {
+    // DOM already loaded (e.g., when dashboard.js is loaded dynamically)
+    console.log('📄 DOM already loaded, initializing Dashboard immediately...');
     Dashboard.init();
-  });
+  }
 
   // Export globally
   window.Dashboard = Dashboard;
