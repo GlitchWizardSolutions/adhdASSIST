@@ -67,7 +67,6 @@ try {
     if (!$is_writable) {
         jsonError('Uploads directory is not writable. Check permissions on ' . $upload_dir, 500);
     }
-    }
 
     // Generate unique filename
     $user_id = $user['id'];
