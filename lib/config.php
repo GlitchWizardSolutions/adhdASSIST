@@ -50,7 +50,7 @@ class Config {
     /**
      * Get filesystem path for resources
      * 
-     * @param string $type Path type: 'uploads', 'logs', 'private', 'public', 'project'
+     * @param string $type Path type: 'uploads', 'private_uploads', 'logs', 'private', 'public', 'project'
      * @return string Full filesystem path
      */
     public static function path($type) {
@@ -61,6 +61,7 @@ class Config {
             'public_html' => public_path,
             'private' => private_path,
             'uploads' => public_path . 'uploads/',
+            'private_uploads' => uploads_path,
             'logs' => logs_path,
         ];
 

@@ -44,28 +44,15 @@ if ($file['size'] > $max_size) {
 }
 
 try {
-    // Create uploads directory in /private/ (survives GitHub pulls)
-    // Path from adhdASSIST/api/profile/ -> up 4 levels to project root
-    $upload_dir = __DIR__ . '/../../../../private/uploads';
+    // Create uploads directory in /private/uploads/ (survives GitHub pulls)
+    // Uses environment-aware path from Config
+    $upload_dir = Config::path('private_uploads');
     
-    // Debug: Check if /private/ directory exists
-    $private_dir = __DIR__ . '/../../../../private';
-    error_log("📁 Avatar upload - /private/ path: {$private_dir}");
-    error_log("📁 Avatar upload - /private/ exists: " . (file_exists($private_dir) ? 'YES' : 'NO'));
-    
-    if (!file_exists($private_dir)) {
-        // Try to create /private/ directory if it doesn't exist
-        $mkdir_result = @mkdir($private_dir, 0755, true);
-        error_log("📁 Avatar upload - Created /private/: " . ($mkdir_result ? 'SUCCESS' : 'FAILED'));
-        if (!$mkdir_result) {
-            jsonError('Cannot create /private/ directory. Check server permissions.', 500);
-        }
-    }
+    // Debug: Check if /private/uploads/ directory exists
+    error_log("📁 Avatar upload - upload_dir path: {$upload_dir}");
+    error_log("📁 Avatar upload - upload_dir exists: " . (file_exists($upload_dir) ? 'YES' : 'NO'));
     
     // Check if /private/uploads/ exists, create if needed
-    error_log("📁 Avatar upload - /uploads/ path: {$upload_dir}");
-    error_log("📁 Avatar upload - /uploads/ exists: " . (file_exists($upload_dir) ? 'YES' : 'NO'));
-    
     if (!file_exists($upload_dir)) {
         $mkdir_result = @mkdir($upload_dir, 0755, true);
         error_log("📁 Avatar upload - Created /uploads/: " . ($mkdir_result ? 'SUCCESS' : 'FAILED'));
@@ -79,6 +66,7 @@ try {
     error_log("📁 Avatar upload - /uploads/ is writable: " . ($is_writable ? 'YES' : 'NO'));
     if (!$is_writable) {
         jsonError('Uploads directory is not writable. Check permissions on ' . $upload_dir, 500);
+    }
     }
 
     // Generate unique filename

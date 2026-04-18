@@ -40,12 +40,11 @@ if (strpos($filename, '..') !== false || strpos($filename, '/') !== false || str
     die('Invalid filename');
 }
 
-// Build full path
-$base_path = __DIR__ . '/../../..';
-$file_path = null;
+// Build full path using environment-aware config
+$upload_dir = Config::path('private_uploads');
 
 if ($type === 'avatar') {
-    $file_path = $base_path . '/private/uploads/' . $filename;
+    $file_path = $upload_dir . $filename;
 }
 
 if (!$file_path || !file_exists($file_path)) {
