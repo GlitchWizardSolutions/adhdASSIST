@@ -725,18 +725,31 @@ try {
         avatarFormData.append('avatar_upload', avatarFile.files[0]);
 
         fetch('../api/profile/upload-avatar.php', { method: 'POST', body: avatarFormData })
-          .then(r => r.json())
-          .then(json => {
-            if (!json.success) {
-              alert('Avatar upload failed: ' + (json.error || 'Unknown error'));
-              return;
+          .then(r => {
+            console.log('Avatar upload response status:', r.status);
+            if (!r.ok) {
+              throw new Error(`HTTP ${r.status}: ${r.statusText}`);
             }
-            // Continue with profile update
-            updatePreferences(formData, newEmail, emailChanged);
+            return r.text();
+          })
+          .then(text => {
+            console.log('Avatar upload response text:', text);
+            try {
+              const json = JSON.parse(text);
+              if (!json.success) {
+                alert('Avatar upload failed: ' + (json.error || 'Unknown error'));
+                return;
+              }
+              // Continue with profile update
+              updatePreferences(formData, newEmail, emailChanged);
+            } catch (parseError) {
+              console.error('Failed to parse avatar response as JSON:', parseError);
+              alert('Avatar upload response error: ' + text);
+            }
           })
           .catch(e => {
-            alert('Error uploading avatar');
-            console.error(e);
+            console.error('Avatar upload error:', e);
+            alert('Error uploading avatar: ' + e.message);
           });
       } else {
         updatePreferences(formData, newEmail, emailChanged);
@@ -750,51 +763,72 @@ try {
         emailVerifyData.append('new_email', newEmail);
         
         fetch('../api/profile/request-email-verification.php', { method: 'POST', body: emailVerifyData })
-          .then(r => r.json())
-          .then(json => {
-            if (json.success) {
-              // Now save other preferences
-              fetch('../api/profile/preferences.php', { method: 'POST', body: formData })
-                .then(r => r.json())
-                .then(json => {
-                  if (json.success) {
-                    alert('Settings saved successfully!\n\n✉️ Verification email sent to ' + newEmail + '\nPlease check your inbox to confirm the email change.');
-                    setTimeout(() => location.reload(), 2000);
-                  } else {
-                    alert('Error saving preferences: ' + (json.error || 'Failed to save settings'));
-                  }
-                })
-                .catch(e => {
-                  alert('Error saving preferences');
-                  console.error(e);
-                });
-            } else {
-              alert('Error requesting email verification: ' + (json.error || 'Failed to send verification email'));
+          .then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+            return r.text();
+          })
+          .then(text => {
+            try {
+              const json = JSON.parse(text);
+              if (json.success) {
+                // Now save other preferences
+                fetch('../api/profile/preferences.php', { method: 'POST', body: formData })
+                  .then(r => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+                    return r.text();
+                  })
+                  .then(text => {
+                    const json = JSON.parse(text);
+                    if (json.success) {
+                      alert('Settings saved successfully!\n\n✉️ Verification email sent to ' + newEmail + '\nPlease check your inbox to confirm the email change.');
+                      setTimeout(() => location.reload(), 2000);
+                    } else {
+                      alert('Error saving preferences: ' + (json.error || 'Failed to save settings'));
+                    }
+                  })
+                  .catch(e => {
+                    console.error('Preferences save error:', e);
+                    alert('Error saving preferences: ' + e.message);
+                  });
+              } else {
+                alert('Error requesting email verification: ' + (json.error || 'Failed to send verification email'));
+              }
+            } catch (parseError) {
+              console.error('Email verification response parse error:', parseError, text);
+              alert('Server error: ' + text);
             }
           })
           .catch(e => {
-            alert('Error requesting email verification');
-            console.error(e);
+            console.error('Email verification fetch error:', e);
+            alert('Error requesting email verification: ' + e.message);
           });
       } else {
         // No email change, just save preferences normally
         fetch('../api/profile/preferences.php', { method: 'POST', body: formData })
           .then(r => {
             console.log('Preferences API response status:', r.status);
-            return r.json();
+            if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+            return r.text();
           })
-          .then(json => {
-            console.log('Preferences API response:', json);
-            if (json.success) {
-              alert('Settings saved successfully!');
-              setTimeout(() => location.reload(), 500);
-            } else {
-              alert('Error: ' + (json.error || 'Failed to save settings'));
+          .then(text => {
+            console.log('Preferences API response text:', text);
+            try {
+              const json = JSON.parse(text);
+              console.log('Preferences API response (parsed):', json);
+              if (json.success) {
+                alert('Settings saved successfully!');
+                setTimeout(() => location.reload(), 500);
+              } else {
+                alert('Error: ' + (json.error || 'Failed to save settings'));
+              }
+            } catch (parseError) {
+              console.error('Response parse error:', parseError, text);
+              alert('Server error: ' + text);
             }
           })
           .catch(e => {
-            alert('Error saving settings');
             console.error('Error saving settings:', e);
+            alert('Error saving settings: ' + e.message);
           });
       }
     }

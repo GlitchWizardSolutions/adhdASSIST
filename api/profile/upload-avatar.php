@@ -148,8 +148,9 @@ try {
         }
     }
 
-    // Save to database as API URL (environment-aware)
-    $avatar_url = Config::url('api') . '/files/serve.php?type=avatar&file=' . $filename;
+    // Save to database as API URL (environment-aware, handle trailing slash)
+    $api_base = rtrim(Config::url('api'), '/');
+    $avatar_url = $api_base . '/files/serve.php?type=avatar&file=' . $filename;
     $stmt = $pdo->prepare('UPDATE users SET avatar_url = ? WHERE id = ?');
     $stmt->execute([$avatar_url, $user_id]);
 

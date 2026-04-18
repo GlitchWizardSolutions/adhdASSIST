@@ -26,6 +26,7 @@ if (!file_exists($private_uploads)) {
 $pdo = db();
 $migrated = 0;
 $errors = [];
+$api_base = rtrim(Config::url('api'), '/');
 
 try {
     // Get all users with avatars
@@ -52,7 +53,7 @@ try {
             // Move file to private directory
             if (@rename($old_path, $new_path)) {
                 // Update database with new API URL
-                $api_url = Config::url('api') . '/files/serve.php?type=avatar&file=' . $filename;
+                $api_url = $api_base . '/files/serve.php?type=avatar&file=' . $filename;
                 $update_stmt = $pdo->prepare('UPDATE users SET avatar_url = ? WHERE id = ?');
                 $update_stmt->execute([$api_url, $user_id]);
                 $migrated++;
@@ -61,7 +62,7 @@ try {
             }
         } else {
             // File doesn't exist in old location, just update URL
-            $api_url = Config::url('api') . '/files/serve.php?type=avatar&file=' . $filename;
+            $api_url = $api_base . '/files/serve.php?type=avatar&file=' . $filename;
             $update_stmt = $pdo->prepare('UPDATE users SET avatar_url = ? WHERE id = ?');
             $update_stmt->execute([$api_url, $user_id]);
             $migrated++;
