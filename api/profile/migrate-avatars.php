@@ -18,7 +18,7 @@ if ($user['role'] !== 'admin' && $user['role'] !== 'developer') {
 }
 
 // Ensure /private/uploads/ exists
-$private_uploads = __DIR__ . '/../../../private/uploads';
+$private_uploads = Config::path('private_uploads');
 if (!file_exists($private_uploads)) {
     mkdir($private_uploads, 0755, true);
 }
