@@ -25,6 +25,17 @@ if (!isset($current_page)) {
 $user_role = $user['role'] ?? 'user';
 $is_admin = $user && in_array($user_role, ['admin', 'developer']);
 
+// Load user's in-app notifications preference
+$show_notifications = true; // Default to showing notifications
+if ($user) {
+    require_once __DIR__ . '/../lib/database.php';
+    $pdo = db();
+    $stmt = $pdo->prepare('SELECT in_app_notifications_enabled FROM user_preferences WHERE user_id = ? LIMIT 1');
+    $stmt->execute([$user['id']]);
+    $prefs = $stmt->fetch(PDO::FETCH_ASSOC);
+    $show_notifications = (int)($prefs['in_app_notifications_enabled'] ?? 1); // Default true if no preference set
+}
+
 // Get avatar URL or use generic placeholder (API URL is already stored in database)
 $avatar_url = (!empty($user['avatar_url'])) ? htmlspecialchars($user['avatar_url']) : null;
 $user_display_name = $user ? (htmlspecialchars(($user['username'] ?? '') ?: ($user['first_name'] ?? $user['email']))) : 'User';
@@ -80,10 +91,8 @@ if ($user) {
                     </li>
                 <?php endif; ?>
 
-             
- 
-
-                <!-- Reminders Notification Bell -->
+                <!-- Reminders Notification Bell (Only if in-app notifications enabled) -->
+                <?php if ($show_notifications): ?>
                 <li class="nav-item ms-lg-2">
                     <button 
                         class="btn btn-link nav-link" 
@@ -104,8 +113,10 @@ if ($user) {
                         </div>
                     </ul>
                 </li>
+                <?php endif; ?>
 
-                <!-- Habit Notification Badge -->
+                <!-- Habit Notification Badge (Only if in-app notifications enabled) -->
+                <?php if ($show_notifications): ?>
                 <li class="nav-item ms-lg-2">
                     <button 
                         class="btn btn-link nav-link" 
@@ -128,8 +139,10 @@ if ($user) {
                         <li><a class="dropdown-item text-center small" href="<?php echo Config::redirectUrl('/views/dashboard.php'); ?>#routines-pane">View All Habits</a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
-                <!-- Assigned Tasks Notification Bell -->
+                <!-- Assigned Tasks Notification Bell (Only if in-app notifications enabled) -->
+                <?php if ($show_notifications): ?>
                 <li class="nav-item ms-lg-2">
                     <button 
                         class="btn btn-link nav-link" 
@@ -152,6 +165,7 @@ if ($user) {
                         <li><a class="dropdown-item text-center small" href="<?php echo Config::redirectUrl('/views/task-planner.php'); ?>?filter=assigned">View All Assigned Tasks</a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
                 <!-- User Profile Dropdown -->
                 <li class="nav-item dropdown ms-lg-3">
