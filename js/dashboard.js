@@ -46,6 +46,25 @@
     // Initialize dashboard on page load
     init: function() {
       console.log('🧠 ADHD Dashboard initializing (Refactored)...');
+      console.log('📱 SMS Notifications Enabled (from window._currentUser):', window._currentUser?.smsNotificationsEnabled);
+      
+      // Hide Send SMS buttons if SMS notifications are disabled
+      if (window._currentUser && !window._currentUser.smsNotificationsEnabled) {
+        console.log('🔕 SMS disabled - attempting to hide buttons...');
+        const sendHabitsBtn = document.getElementById('send-habits-sms-btn');
+        const sendTasksBtn = document.getElementById('send-tasks-sms-btn');
+        console.log('Found sendHabitsBtn:', !!sendHabitsBtn, 'Found sendTasksBtn:', !!sendTasksBtn);
+        if (sendHabitsBtn) {
+          sendHabitsBtn.style.display = 'none';
+          console.log('✅ Hidden send-habits-sms-btn');
+        }
+        if (sendTasksBtn) {
+          sendTasksBtn.style.display = 'none';
+          console.log('✅ Hidden send-tasks-sms-btn');
+        }
+      } else {
+        console.log('✅ SMS enabled - buttons will show');
+      }
       
       // Bind form submission
       const form = document.querySelector(this.selectors.captureForm);

@@ -16,6 +16,17 @@ if (!Auth::isAuthenticated()) {
 
 // Get current user
 $user = Auth::getCurrentUser();
+
+// Get user preferences (including SMS notifications setting)
+require_once __DIR__ . '/../lib/database.php';
+$pdo = db();
+$stmt = $pdo->prepare('SELECT sms_notifications_enabled FROM user_preferences WHERE user_id = ? LIMIT 1');
+$stmt->execute([$user['id']]);
+$prefs = $stmt->fetch(PDO::FETCH_ASSOC);
+$smsEnabled = $prefs['sms_notifications_enabled'] ?? 0;
+
+// DEBUG
+error_log("📱 Dashboard.php DEBUG - User ID: {$user['id']}, SMS Enabled: " . var_export($smsEnabled, true) . ", Raw prefs: " . json_encode($prefs));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -451,8 +462,12 @@ $user = Auth::getCurrentUser();
       name: "<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>",
       firstName: "<?php echo htmlspecialchars($user['first_name']); ?>",
       lastName: "<?php echo htmlspecialchars($user['last_name']); ?>",
-      email: "<?php echo htmlspecialchars($user['email']); ?>"
+      email: "<?php echo htmlspecialchars($user['email']); ?>",
+      smsNotificationsEnabled: <?php echo $smsEnabled ? 'true' : 'false'; ?>
     };
+    
+    // DEBUG: Log SMS notifications enabled status
+    console.log('🔔 SMS Notifications Enabled:', window._currentUser.smsNotificationsEnabled);
 
     // Handle tab activation via URL hash (e.g., #routines-pane)
     document.addEventListener('DOMContentLoaded', function() {

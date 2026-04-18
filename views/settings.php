@@ -473,7 +473,7 @@ try {
                 <?php echo ($preferences['sms_notifications_enabled'] ?? false) ? 'checked' : ''; ?>>
               <div>
                 <label for="sms_notifications" style="font-weight: 600;">SMS Notifications</label>
-                <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.9rem;">Receive text messages (requires phone & carrier)</p>
+                <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.9rem;">Receive text messages (requires SMS Phone Number, below)</p>
               </div>
             </div>
           </div>
@@ -711,6 +711,13 @@ try {
       formData.append('email_reminder_type', document.getElementById('email_reminder_type').value);
       formData.append('quiet_hours_start', document.getElementById('quiet_hours_start').value);
       formData.append('quiet_hours_end', document.getElementById('quiet_hours_end').value);
+      
+      // Debug: Log notification checkbox values
+      console.log('Notification preferences being saved:', {
+        email_notifications: document.getElementById('email_notifications').checked ? 1 : 0,
+        in_app_notifications: document.getElementById('in_app_notifications').checked ? 1 : 0,
+        sms_notifications: document.getElementById('sms_notifications').checked ? 1 : 0
+      });
 
       // Upload avatar if present
       if (avatarFile && avatarFile.files.length > 0) {
@@ -772,8 +779,12 @@ try {
       } else {
         // No email change, just save preferences normally
         fetch('../api/profile/preferences.php', { method: 'POST', body: formData })
-          .then(r => r.json())
+          .then(r => {
+            console.log('Preferences API response status:', r.status);
+            return r.json();
+          })
           .then(json => {
+            console.log('Preferences API response:', json);
             if (json.success) {
               alert('Settings saved successfully!');
               setTimeout(() => location.reload(), 500);
@@ -783,7 +794,7 @@ try {
           })
           .catch(e => {
             alert('Error saving settings');
-            console.error(e);
+            console.error('Error saving settings:', e);
           });
       }
     }

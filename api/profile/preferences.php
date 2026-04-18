@@ -45,12 +45,12 @@ try {
     $daily_habits_reset_time = isset($_POST['daily_habits_reset_time']) ? trim($_POST['daily_habits_reset_time']) : '00:00:00';
     $pomodoro_duration = isset($_POST['pomodoro_duration']) ? intval($_POST['pomodoro_duration']) : 25;
     $break_duration = isset($_POST['break_duration']) ? intval($_POST['break_duration']) : 5;
-    $pomodoro_sound = isset($_POST['pomodoro_sound']) ? 1 : 0;
-    $show_badges_widget = isset($_POST['show_badges_widget']) ? 1 : 0;
-    $focus_planning = isset($_POST['focus_planning']) ? 1 : 0;
-    $email_notifications = isset($_POST['email_notifications']) ? 1 : 0;
-    $in_app_notifications = isset($_POST['in_app_notifications']) ? 1 : 0;
-    $sms_notifications = isset($_POST['sms_notifications']) ? 1 : 0;
+    $pomodoro_sound = isset($_POST['pomodoro_sound']) ? intval($_POST['pomodoro_sound']) : 0;
+    $show_badges_widget = isset($_POST['show_badges_widget']) ? intval($_POST['show_badges_widget']) : 0;
+    $focus_planning = isset($_POST['focus_planning']) ? intval($_POST['focus_planning']) : 0;
+    $email_notifications = isset($_POST['email_notifications']) ? intval($_POST['email_notifications']) : 0;
+    $in_app_notifications = isset($_POST['in_app_notifications']) ? intval($_POST['in_app_notifications']) : 0;
+    $sms_notifications = isset($_POST['sms_notifications']) ? intval($_POST['sms_notifications']) : 0;
     $email_reminder_type = isset($_POST['email_reminder_type']) ? trim($_POST['email_reminder_type']) : 'immediate';
     $quiet_hours_start = isset($_POST['quiet_hours_start']) ? trim($_POST['quiet_hours_start']) : '21:00:00';
     $quiet_hours_end = isset($_POST['quiet_hours_end']) ? trim($_POST['quiet_hours_end']) : '08:00:00';
@@ -185,7 +185,9 @@ try {
                 $user_id
             ]);
         } catch (PDOException $e) {
-            $result = false;
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Database update error: ' . $e->getMessage()]);
+            exit;
         }
     } else {
         try {
@@ -211,7 +213,9 @@ try {
                 $quiet_hours_end
             ]);
         } catch (PDOException $e) {
-            $result = false;
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Database insert error: ' . $e->getMessage()]);
+            exit;
         }
     }
     
@@ -221,7 +225,7 @@ try {
             'message' => 'Preferences updated successfully'
         ]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to update preferences']);
+        echo json_encode(['success' => false, 'error' => 'Failed to update preferences (no rows affected)']);
     }
     
 } catch (Exception $e) {
