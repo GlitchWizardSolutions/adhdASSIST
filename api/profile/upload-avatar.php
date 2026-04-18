@@ -46,8 +46,26 @@ if ($file['size'] > $max_size) {
 try {
     // Create uploads directory in /private/ (survives GitHub pulls)
     $upload_dir = __DIR__ . '/../../../private/uploads';
+    
+    // Debug: Check if /private/ directory exists
+    $private_dir = __DIR__ . '/../../../private';
+    if (!file_exists($private_dir)) {
+        // Try to create /private/ directory if it doesn't exist
+        if (!@mkdir($private_dir, 0755, true)) {
+            jsonError('Cannot create /private/ directory. Check server permissions.', 500);
+        }
+    }
+    
+    // Check if /private/uploads/ exists, create if needed
     if (!file_exists($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
+        if (!@mkdir($upload_dir, 0755, true)) {
+            jsonError('Cannot create uploads directory. Check server permissions.', 500);
+        }
+    }
+    
+    // Verify directory is writable
+    if (!is_writable($upload_dir)) {
+        jsonError('Uploads directory is not writable. Check permissions on ' . $upload_dir, 500);
     }
 
     // Generate unique filename
@@ -74,7 +92,7 @@ try {
     }
 
     if (!$image) {
-        jsonError('Failed to process image', 400);
+        jsonError('Failed to process image. The file may be corrupted or unsupported.', 400);
     }
 
     // Resize to 200x200px
@@ -103,9 +121,17 @@ try {
     imagecopyresampled($resized, $image, 0, 0, $src_x, $src_y, 200, 200, $size, $size);
 
     // Save resized image as JPEG for consistency
-    imagejpeg($resized, $filepath, 90);
+    if (!imagejpeg($resized, $filepath, 90)) {
+        jsonError('Failed to save image file. Check directory permissions.', 500);
+    }
+    
     imagedestroy($image);
     imagedestroy($resized);
+    
+    // Verify file was created
+    if (!file_exists($filepath)) {
+        jsonError('Image file was not saved. Check directory permissions.', 500);
+    }
 
     // Delete old avatar if exists
     $pdo = db();

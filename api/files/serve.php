@@ -1,7 +1,7 @@
 <?php
 /**
  * ADHD Dashboard - Secure File Serving API
- * GET /api/files/serve.php?type=avatar&filename=avatar_1_123456.jpg
+ * GET /api/files/serve.php?type=avatar&file=avatar_1_123456.jpg
  * 
  * Serves files from the /private/ directory securely:
  * - Validates authentication
