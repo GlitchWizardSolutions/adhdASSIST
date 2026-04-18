@@ -49,22 +49,34 @@ try {
     
     // Debug: Check if /private/ directory exists
     $private_dir = __DIR__ . '/../../../private';
+    error_log("📁 Avatar upload - /private/ path: {$private_dir}");
+    error_log("📁 Avatar upload - /private/ exists: " . (file_exists($private_dir) ? 'YES' : 'NO'));
+    
     if (!file_exists($private_dir)) {
         // Try to create /private/ directory if it doesn't exist
-        if (!@mkdir($private_dir, 0755, true)) {
+        $mkdir_result = @mkdir($private_dir, 0755, true);
+        error_log("📁 Avatar upload - Created /private/: " . ($mkdir_result ? 'SUCCESS' : 'FAILED'));
+        if (!$mkdir_result) {
             jsonError('Cannot create /private/ directory. Check server permissions.', 500);
         }
     }
     
     // Check if /private/uploads/ exists, create if needed
+    error_log("📁 Avatar upload - /uploads/ path: {$upload_dir}");
+    error_log("📁 Avatar upload - /uploads/ exists: " . (file_exists($upload_dir) ? 'YES' : 'NO'));
+    
     if (!file_exists($upload_dir)) {
-        if (!@mkdir($upload_dir, 0755, true)) {
+        $mkdir_result = @mkdir($upload_dir, 0755, true);
+        error_log("📁 Avatar upload - Created /uploads/: " . ($mkdir_result ? 'SUCCESS' : 'FAILED'));
+        if (!$mkdir_result) {
             jsonError('Cannot create uploads directory. Check server permissions.', 500);
         }
     }
     
     // Verify directory is writable
-    if (!is_writable($upload_dir)) {
+    $is_writable = is_writable($upload_dir);
+    error_log("📁 Avatar upload - /uploads/ is writable: " . ($is_writable ? 'YES' : 'NO'));
+    if (!$is_writable) {
         jsonError('Uploads directory is not writable. Check permissions on ' . $upload_dir, 500);
     }
 
@@ -121,7 +133,11 @@ try {
     imagecopyresampled($resized, $image, 0, 0, $src_x, $src_y, 200, 200, $size, $size);
 
     // Save resized image as JPEG for consistency
-    if (!imagejpeg($resized, $filepath, 90)) {
+    error_log("📸 Avatar upload - Saving to: {$filepath}");
+    $save_result = imagejpeg($resized, $filepath, 90);
+    error_log("📸 Avatar upload - Save result: " . ($save_result ? 'SUCCESS' : 'FAILED'));
+    
+    if (!$save_result) {
         jsonError('Failed to save image file. Check directory permissions.', 500);
     }
     
@@ -129,7 +145,11 @@ try {
     imagedestroy($resized);
     
     // Verify file was created
-    if (!file_exists($filepath)) {
+    $file_exists = file_exists($filepath);
+    $file_size = $file_exists ? filesize($filepath) : 0;
+    error_log("📸 Avatar upload - File exists after save: " . ($file_exists ? 'YES' : 'NO') . " (size: {$file_size} bytes)");
+    
+    if (!$file_exists) {
         jsonError('Image file was not saved. Check directory permissions.', 500);
     }
 
@@ -151,8 +171,11 @@ try {
     // Save to database as API URL (environment-aware, handle trailing slash)
     $api_base = rtrim(Config::url('api'), '/');
     $avatar_url = $api_base . '/files/serve.php?type=avatar&file=' . $filename;
+    error_log("💾 Avatar upload - Storing URL in database: {$avatar_url}");
+    
     $stmt = $pdo->prepare('UPDATE users SET avatar_url = ? WHERE id = ?');
     $stmt->execute([$avatar_url, $user_id]);
+    error_log("✅ Avatar upload - Successfully updated user {$user_id} with new avatar");
 
     jsonSuccess(['avatar_url' => $avatar_url], 'Avatar uploaded successfully', 201);
 
