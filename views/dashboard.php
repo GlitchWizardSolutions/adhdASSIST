@@ -397,6 +397,9 @@ error_log("📱 Dashboard.php DEBUG - User ID: {$user['id']}, SMS Enabled: " . v
                     <button id="send-habits-sms-btn" class="btn btn-sm btn-outline-success" title="Send unchecked habits via SMS">
                       <i class="bi bi-chat-left-text"></i> Send SMS
                     </button>
+                    <button id="send-habits-email-btn" class="btn btn-sm btn-outline-info" title="Send unchecked habits via email">
+                      <i class="bi bi-envelope"></i> Send Email
+                    </button>
                     <a href="habits.php" class="btn btn-sm btn-outline-secondary">Manage</a>
                   </div>
                 </div>

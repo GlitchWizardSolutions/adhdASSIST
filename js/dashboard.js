@@ -83,6 +83,11 @@
         sendHabitsBtn.addEventListener('click', (e) => this.sendHabitsSMS(e));
       }
 
+      const sendHabitsEmailBtn = document.getElementById('send-habits-email-btn');
+      if (sendHabitsEmailBtn) {
+        sendHabitsEmailBtn.addEventListener('click', (e) => this.sendHabitsEmail(e));
+      }
+
       // Bind today's focus SMS button
       const sendTasksBtn = document.getElementById('send-tasks-sms-btn');
       if (sendTasksBtn) {
@@ -481,6 +486,76 @@
           this.showFeedback(errorMsg);
         }
         console.error('SMS error (habits):', error?.message || error, error);
+      }
+    },
+
+    sendHabitsEmail: async function(evt) {
+      try {
+        const btn = evt?.target?.closest('button');
+        const originalText = btn?.innerHTML;
+        
+        // Disable button and show loading state
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sending...';
+        }
+
+        // Call the send-reminders endpoint with current period based on time of day
+        const now = new Date();
+        const hour = now.getHours();
+        let period = 'morning'; // default
+        
+        if (hour >= 12 && hour < 17) {
+          period = 'afternoon';
+        } else if (hour >= 17) {
+          period = 'evening';
+        }
+
+        const response = await fetch(this.apiBase + 'habits/send-reminders.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+          body: 'period=' + encodeURIComponent(period)
+        });
+        const result = await response.json();
+
+        // Restore button
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+
+        if (result.success) {
+          const message = result.sent_count > 0 
+            ? `✅ Email sent! (${result.sent_count} reminder${result.sent_count !== 1 ? 's' : ''})`
+            : '✅ No incomplete habits - no email needed.';
+          
+          if (typeof NotificationHandler !== 'undefined') {
+            NotificationHandler.toast(message, 'success');
+          } else {
+            this.showFeedback(message);
+          }
+          console.log('📧 Habits email sent:', result);
+        } else {
+          const errorMsg = '❌ ' + (result.error || 'Failed to send email');
+          if (typeof NotificationHandler !== 'undefined') {
+            NotificationHandler.toast(errorMsg, 'error');
+          } else {
+            this.showFeedback(errorMsg);
+          }
+          console.error('Failed to send habits email:', result);
+        }
+      } catch (error) {
+        if (evt?.target?.closest('button')) {
+          evt.target.closest('button').disabled = false;
+          evt.target.closest('button').innerHTML = '<i class="bi bi-envelope"></i> Send Email';
+        }
+        const errorMsg = '❌ Error sending email: ' + (error?.message || error);
+        if (typeof NotificationHandler !== 'undefined') {
+          NotificationHandler.toast(errorMsg, 'error');
+        } else {
+          this.showFeedback(errorMsg);
+        }
+        console.error('Email error (habits):', error?.message || error, error);
       }
     },
 
