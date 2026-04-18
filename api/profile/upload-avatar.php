@@ -45,10 +45,11 @@ if ($file['size'] > $max_size) {
 
 try {
     // Create uploads directory in /private/ (survives GitHub pulls)
-    $upload_dir = __DIR__ . '/../../../private/uploads';
+    // Path from adhdASSIST/api/profile/ -> up 4 levels to project root
+    $upload_dir = __DIR__ . '/../../../../private/uploads';
     
     // Debug: Check if /private/ directory exists
-    $private_dir = __DIR__ . '/../../../private';
+    $private_dir = __DIR__ . '/../../../../private';
     error_log("📁 Avatar upload - /private/ path: {$private_dir}");
     error_log("📁 Avatar upload - /private/ exists: " . (file_exists($private_dir) ? 'YES' : 'NO'));
     

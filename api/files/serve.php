@@ -42,10 +42,11 @@ if (strpos($filename, '..') !== false || strpos($filename, '/') !== false || str
 
 // Build full path
 $base_path = __DIR__ . '/../../..';
-$file_path = match($type) {
-    'avatar' => $base_path . '/private/uploads/' . $filename,
-    default => null
-};
+$file_path = null;
+
+if ($type === 'avatar') {
+    $file_path = $base_path . '/private/uploads/' . $filename;
+}
 
 if (!$file_path || !file_exists($file_path)) {
     http_response_code(404);
