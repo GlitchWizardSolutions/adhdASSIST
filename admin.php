@@ -193,7 +193,7 @@ try {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($recent_users as $u): ?>
+                    <?php if (!empty($recent_users)) foreach ($recent_users as $u): ?>
                         <tr>
                             <td><code class="user-email"><?php echo htmlspecialchars($u['email']); ?></code></td>
                             <td><?php echo htmlspecialchars($u['first_name'] . ' ' . $u['last_name']); ?></td>
@@ -252,7 +252,8 @@ try {
     
     <!-- Admin Minified Bundle (Production) -->
     <script src="<?php echo Config::url('base'); ?>dist/admin.min.js"></script>
-    <script>\n        // Set current user role for use in modal
+    <script>
+        // Set current user role for use in modal
         window._currentUserRole = '<?php echo htmlspecialchars($user['role']); ?>';
         
         // Scroll to top button
