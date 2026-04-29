@@ -377,7 +377,7 @@ $user = Auth::getCurrentUser();
             <span class="habit-type-badge ${typeClass}">${habit.habit_type}</span>
           </div>
           <div class="habit-actions">
-            <button class="btn-edit" onclick="HabitsManager.openEditModal(${habit.id}, '${this.escapeHtml(habit.habit_name)}', '${habit.habit_type}', ${habit.is_morning}, ${habit.is_afternoon}, ${habit.is_evening})">
+            <button class="btn-edit" onclick="HabitsManager.openEditModal(${habit.id}, '${this.escapeHtml(habit.habit_name)}', '${this.escapeHtml(habit.habit_type)}', ${habit.is_morning}, ${habit.is_afternoon}, ${habit.is_evening})">
               <i class="bi bi-pencil"></i> Edit
             </button>
             <button class="btn-delete" onclick="HabitsManager.deleteHabit(${habit.id})">
