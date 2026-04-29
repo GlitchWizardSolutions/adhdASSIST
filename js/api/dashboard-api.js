@@ -46,17 +46,35 @@ const DashboardAPI = (function() {
     /**
      * Get daily habits
      */
-    async function getDailyHabits() {
-        return APIHelper.get('habits/read.php');
+    async function getDailyHabits(date = null) {
+        // Use provided date or default to today (YYYY-MM-DD format)
+        if (!date) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            date = `${year}-${month}-${day}`;
+        }
+        return APIHelper.get(`habits/read.php?date=${date}`);
     }
 
     /**
-     * Update habit completion
+     * Update habit completion (toggle)
+     * Toggles habit completion for today
      */
-    async function updateHabit(habitId, completed) {
-        return APIHelper.put('habits/update.php', {
+    async function updateHabit(habitId, completed, date = null) {
+        // Use provided date or default to today (YYYY-MM-DD format)
+        if (!date) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            date = `${year}-${month}-${day}`;
+        }
+        // Use toggle endpoint which properly handles completion in habit_completions table
+        return APIHelper.post('habits/toggle.php', {
             habit_id: habitId,
-            completed
+            date
         });
     }
 
